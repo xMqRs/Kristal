@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel — Kristal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Inter:wght@300..700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-black:#07070a;
+    --bg-dark:#121218;
+    --bg-dark-2:#1a1a22;
+    --surface:rgba(255,255,255,0.045);
+    --surface-strong:rgba(255,255,255,0.08);
+    --border:rgba(255,255,255,0.09);
+    --border-strong:rgba(255,255,255,0.16);
+    --indigo:#6366f1;
+    --indigo-deep:#3730a3;
+    --indigo-glow:#a5b4fc;
+    --indigo-dim:#312e81;
+    --green:#34d399;
+    --text-primary:#f2f2f6;
+    --text-muted:#9b9ba7;
+    --text-dim:#5c5c68;
+    --radius:18px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    background:var(--bg-black);
+    color:var(--text-primary);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none;}
+  ul{list-style:none;}
+  button{font-family:'Inter',sans-serif;cursor:pointer;}
+  h1,h2,h3,.display{font-family:'Space Grotesk',sans-serif;letter-spacing:-0.02em;line-height:1.1;}
+
+  .ambient{
+    position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(50vw 50vw at 90% -10%, rgba(99,102,241,0.14), transparent 60%),
+      radial-gradient(45vw 45vw at 0% 100%, rgba(55,48,163,0.14), transparent 60%);
+  }
+  .noise{
+    position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0.03;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .glass{
+    background:linear-gradient(155deg, var(--surface-strong), var(--surface) 60%);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    backdrop-filter:blur(20px) saturate(140%);
+    -webkit-backdrop-filter:blur(20px) saturate(140%);
+    box-shadow:0 1px 0 0 rgba(255,255,255,0.07) inset, 0 24px 50px -28px rgba(0,0,0,0.65);
+    position:relative;
+  }
+
+  .icon{width:17px;height:17px;flex-shrink:0;}
+  svg{display:block;}
+
+  /* ---------------- layout shell ---------------- */
+  .shell{display:flex;min-height:100vh;position:relative;z-index:2;}
+
+  /* sidebar */
+  .sidebar{
+    width:246px;flex-shrink:0;
+    padding:22px 16px;
+    display:flex;flex-direction:column;
+    position:sticky;top:0;height:100vh;
+    border-right:1px solid var(--border);
+  }
+  .sb-logo{
+    display:flex;align-items:center;gap:9px;
+    font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:18px;
+    padding:6px 10px 26px;
+  }
+  .sb-logo svg{width:20px;height:20px;}
+  .sb-nav{display:flex;flex-direction:column;gap:4px;flex:1;}
+  .sb-link{
+    display:flex;align-items:center;gap:11px;
+    padding:11px 13px;border-radius:11px;
+    color:var(--text-muted);font-size:14px;font-weight:500;
+    border:1px solid transparent;
+    transition:background .2s ease, color .2s ease, border-color .2s ease;
+  }
+  .sb-link:hover{color:var(--text-primary);background:rgba(255,255,255,0.03);}
+  .sb-link.active{
+    color:var(--text-primary);
+    background:linear-gradient(155deg, rgba(99,102,241,0.22), rgba(99,102,241,0.06));
+    border-color:rgba(165,180,252,0.28);
+  }
+  .sb-link .icon{color:inherit;}
+
+  .sb-profile{
+    display:flex;align-items:center;gap:10px;
+    padding:11px;border-radius:13px;
+    border:1px solid var(--border);
+    background:var(--surface);
+    margin-top:10px;
+  }
+  .avatar{
+    width:36px;height:36px;border-radius:10px;flex-shrink:0;
+    background:linear-gradient(155deg, var(--indigo-glow), var(--indigo-deep));
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13px;color:#fff;
+    overflow:hidden;
+  }
+  .avatar img{width:100%;height:100%;object-fit:cover;}
+  .sb-profile-info{overflow:hidden;flex:1;}
+  .sb-profile-info .name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .sb-profile-info .plan{font-size:11px;color:var(--indigo-glow);font-family:'IBM Plex Mono',monospace;}
+  .sb-logout{color:var(--text-dim);flex-shrink:0;}
+  .sb-logout:hover{color:var(--text-primary);}
+
+  @media(max-width:900px){
+    .sidebar{position:fixed;left:0;top:0;z-index:60;transform:translateX(-100%);transition:transform .3s ease;background:var(--bg-black);}
+    .sidebar.open{transform:translateX(0);}
+    .mobile-toggle{display:flex !important;}
+  }
+
+  /* main */
+  .main{flex:1;min-width:0;padding:20px 30px 60px;}
+  @media(max-width:640px){.main{padding:16px 16px 50px;}}
+
+  .topbar{
+    display:flex;align-items:center;gap:14px;
+    margin-bottom:26px;
+  }
+  .mobile-toggle{
+    display:none;width:38px;height:38px;border-radius:10px;
+    align-items:center;justify-content:center;
+    border:1px solid var(--border);background:var(--surface);color:var(--text-primary);
+    flex-shrink:0;
+  }
+  .search-bar{
+    flex:1;position:relative;max-width:460px;
+  }
+  .search-bar .icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-dim);}
+  .search-bar input{
+    width:100%;padding:11px 14px 11px 40px;
+    background:var(--surface);border:1px solid var(--border);border-radius:12px;
+    color:var(--text-primary);font-size:14px;outline:none;
+    transition:border-color .2s ease, background .2s ease;
+  }
+  .search-bar input::placeholder{color:var(--text-dim);}
+  .search-bar input:focus{border-color:rgba(165,180,252,0.5); background:rgba(99,102,241,0.06);}
+  .topbar-right{margin-left:auto;display:flex;align-items:center;gap:14px;}
+  .bell{
+    width:38px;height:38px;border-radius:11px;
+    display:flex;align-items:center;justify-content:center;
+    border:1px solid var(--border);background:var(--surface);color:var(--text-muted);
+    position:relative;
+  }
+  .bell::after{content:'';position:absolute;top:9px;right:9px;width:6px;height:6px;border-radius:50%;background:var(--indigo-glow);}
+  .topbar-avatar{width:38px;height:38px;border-radius:11px;}
+
+  .view{display:none;}
+  .view.active{display:block;animation:fadein .35s ease;}
+  @keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+  .page-head{margin-bottom:22px;}
+  .page-head h1{font-size:26px;font-weight:500;}
+  .page-head p{color:var(--text-muted);font-size:14px;margin-top:5px;}
+
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;
+    color:var(--indigo-glow);
+  }
+
+  /* ---------------- overview ---------------- */
+  .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px;}
+  @media(max-width:760px){.stat-grid{grid-template-columns:1fr 1fr;}}
+  @media(max-width:460px){.stat-grid{grid-template-columns:1fr;}}
+  .stat-card{padding:22px;}
+  .stat-card .lbl{font-size:12.5px;color:var(--text-muted);display:flex;align-items:center;justify-content:space-between;}
+  .stat-card .icon{color:var(--indigo-glow);}
+  .stat-card .val{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:600;margin-top:10px;}
+  .stat-card .delta{font-size:12px;color:var(--green);margin-top:4px;font-family:'IBM Plex Mono',monospace;}
+
+  .overview-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:16px;}
+  @media(max-width:900px){.overview-grid{grid-template-columns:1fr;}}
+
+  .suggest-card{padding:28px;position:relative;overflow:hidden;}
+  .suggest-card .glow{position:absolute;width:220px;height:220px;background:radial-gradient(circle, rgba(99,102,241,0.32), transparent 70%);top:-70px;right:-50px;pointer-events:none;}
+  .suggest-amount{font-family:'Space Grotesk',sans-serif;font-size:40px;font-weight:600;margin:14px 0 10px;color:var(--indigo-glow);}
+  .suggest-bar{height:8px;border-radius:6px;background:rgba(255,255,255,0.06);overflow:hidden;margin:16px 0 10px;}
+  .suggest-bar-fill{height:100%;background:linear-gradient(90deg, var(--indigo), var(--indigo-glow));border-radius:6px;}
+  .suggest-note{font-size:13px;color:var(--text-muted);line-height:1.6;}
+
+  .quick-card{padding:26px;display:flex;flex-direction:column;gap:14px;}
+  .quick-card h3{font-size:16px;font-weight:500;}
+  .quick-list{display:flex;flex-direction:column;gap:10px;}
+  .quick-item{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:var(--surface);
+    font-size:13.5px;
+  }
+  .quick-item .l{display:flex;align-items:center;gap:10px;color:var(--text-primary);}
+  .quick-item .l .icon{color:var(--indigo-glow);}
+  .quick-item .r{color:var(--text-dim);font-family:'IBM Plex Mono',monospace;font-size:12px;}
+
+  .recent-head{display:flex;align-items:center;justify-content:space-between;margin:26px 0 14px;}
+  .recent-head h3{font-size:16px;font-weight:500;}
+  .link-btn{font-size:13px;color:var(--indigo-glow);font-weight:600;}
+
+  /* ---------------- buttons ---------------- */
+  .btn-primary{
+    font-weight:600;font-size:14px;padding:12px 20px;border-radius:12px;
+    background:linear-gradient(155deg, var(--indigo), var(--indigo-deep));
+    border:1px solid rgba(165,180,252,0.4);
+    box-shadow:0 10px 26px -10px rgba(99,102,241,0.75), 0 1px 0 rgba(255,255,255,0.25) inset;
+    color:#fff;display:inline-flex;align-items:center;gap:8px;
+    transition:transform .2s ease;
+  }
+  .btn-primary:hover{transform:translateY(-2px);}
+  .btn-ghost{
+    font-weight:500;font-size:14px;padding:11px 18px;border-radius:12px;
+    border:1px solid var(--border-strong);background:var(--surface);color:var(--text-primary);
+    display:inline-flex;align-items:center;gap:8px;
+    transition:border-color .2s ease, background .2s ease;
+  }
+  .btn-ghost:hover{border-color:rgba(165,180,252,0.4);background:rgba(99,102,241,0.06);}
+  .btn-small{padding:8px 14px;font-size:12.5px;border-radius:9px;}
+
+  /* ---------------- marketplace ---------------- */
+  .mk-toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:18px;}
+  .mk-search{flex:1;min-width:220px;position:relative;}
+  .mk-search .icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-dim);}
+  .mk-search input{
+    width:100%;padding:12px 14px 12px 40px;background:var(--surface);border:1px solid var(--border);
+    border-radius:12px;color:var(--text-primary);font-size:14px;outline:none;
+  }
+  .mk-search input:focus{border-color:rgba(165,180,252,0.5);}
+  .chip-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px;}
+  .chip{
+    font-size:12.5px;padding:8px 14px;border-radius:20px;
+    border:1px solid var(--border);background:var(--surface);color:var(--text-muted);
+    transition:all .2s ease;
+  }
+  .chip.active{background:linear-gradient(155deg, var(--indigo), var(--indigo-deep));color:#fff;border-color:rgba(165,180,252,0.4);}
+  .chip:hover:not(.active){border-color:rgba(165,180,252,0.35);color:var(--text-primary);}
+
+  .listing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  @media(max-width:1080px){.listing-grid{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:660px){.listing-grid{grid-template-columns:1fr;}}
+
+  .listing-card{overflow:hidden;display:flex;flex-direction:column;}
+  .listing-thumb{
+    aspect-ratio:16/10.5;position:relative;
+    display:flex;align-items:center;justify-content:center;
+    border-bottom:1px solid var(--border);
+  }
+  .listing-thumb svg{width:38%;opacity:0.9;filter:drop-shadow(0 10px 16px rgba(0,0,0,0.4));}
+  .listing-thumb .cat-badge{
+    position:absolute;top:10px;left:10px;
+    font-size:10.5px;font-family:'IBM Plex Mono',monospace;letter-spacing:0.04em;
+    padding:5px 9px;border-radius:7px;
+    background:rgba(7,7,10,0.55);border:1px solid var(--border-strong);backdrop-filter:blur(6px);
+  }
+  .listing-thumb .sold-badge{
+    position:absolute;inset:0;background:rgba(7,7,10,0.72);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px;letter-spacing:0.06em;
+    color:var(--text-muted);text-transform:uppercase;
+  }
+  .listing-body{padding:16px 16px 18px;display:flex;flex-direction:column;gap:6px;flex:1;}
+  .listing-title{font-size:14.5px;font-weight:500;line-height:1.35;}
+  .listing-meta{font-size:12px;color:var(--text-dim);}
+  .listing-foot{display:flex;align-items:center;justify-content:space-between;margin-top:10px;}
+  .listing-price{font-family:'Space Grotesk',sans-serif;font-weight:600;color:var(--indigo-glow);font-size:15.5px;}
+  .listing-buy{
+    font-size:12px;font-weight:600;padding:8px 13px;border-radius:9px;
+    background:rgba(99,102,241,0.12);border:1px solid rgba(165,180,252,0.3);color:var(--indigo-glow);
+  }
+  .listing-buy:hover{background:rgba(99,102,241,0.22);}
+  .listing-buy:disabled{opacity:0.4;cursor:default;}
+  .empty-state{padding:50px 20px;text-align:center;color:var(--text-dim);font-size:14px;}
+
+  /* ---------------- anunciar ---------------- */
+  .form-shell{max-width:640px;padding:30px 30px 26px;}
+  .field{margin-bottom:18px;}
+  .field label{
+    display:block;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.1em;
+    text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;
+  }
+  .field input, .field select, .field textarea{
+    width:100%;padding:12px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);
+    border-radius:11px;color:var(--text-primary);font-family:'Inter',sans-serif;font-size:14px;outline:none;
+    transition:border-color .2s ease, background .2s ease, box-shadow .2s ease;
+  }
+  .field textarea{resize:vertical;min-height:90px;line-height:1.5;}
+  .field input:focus, .field select:focus, .field textarea:focus{
+    border-color:rgba(165,180,252,0.55);background:rgba(99,102,241,0.06);box-shadow:0 0 0 3px rgba(99,102,241,0.14);
+  }
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media(max-width:520px){.field-row{grid-template-columns:1fr;}}
+
+  .upload-box{
+    border:1.5px dashed var(--border-strong);border-radius:14px;
+    padding:22px;display:flex;align-items:center;gap:16px;cursor:pointer;
+    transition:border-color .2s ease, background .2s ease;
+  }
+  .upload-box:hover{border-color:rgba(165,180,252,0.5);background:rgba(99,102,241,0.05);}
+  .upload-preview{
+    width:64px;height:64px;border-radius:11px;flex-shrink:0;
+    background:linear-gradient(155deg, var(--indigo-glow), var(--indigo-deep));
+    display:flex;align-items:center;justify-content:center;overflow:hidden;color:#fff;
+  }
+  .upload-preview img{width:100%;height:100%;object-fit:cover;}
+  .upload-text b{display:block;font-size:13.5px;}
+  .upload-text span{font-size:12px;color:var(--text-dim);}
+
+  /* ---------------- compras (table) ---------------- */
+  .table-wrap{overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;min-width:560px;}
+  thead th{
+    text-align:left;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.08em;
+    text-transform:uppercase;color:var(--text-dim);padding:0 16px 12px;font-weight:500;
+  }
+  tbody td{padding:16px;font-size:13.5px;border-top:1px solid var(--border);}
+  tbody tr:hover{background:rgba(255,255,255,0.02);}
+  .status-pill{
+    font-size:11.5px;padding:5px 11px;border-radius:20px;font-family:'IBM Plex Mono',monospace;
+    background:rgba(52,211,153,0.12);color:var(--green);border:1px solid rgba(52,211,153,0.3);
+    display:inline-block;
+  }
+  .item-cell{display:flex;align-items:center;gap:10px;}
+  .item-thumb{width:34px;height:34px;border-radius:8px;background:linear-gradient(155deg, var(--indigo-glow), var(--indigo-deep));flex-shrink:0;}
+
+  /* ---------------- config ---------------- */
+  .config-grid{display:grid;grid-template-columns:1fr;gap:16px;max-width:640px;}
+  .config-card{padding:28px;}
+  .config-card h3{font-size:16px;font-weight:500;margin-bottom:18px;}
+  .avatar-edit{display:flex;align-items:center;gap:18px;margin-bottom:22px;}
+  .avatar-edit .avatar{width:64px;height:64px;font-size:20px;border-radius:14px;}
+  .avatar-edit-actions{display:flex;gap:10px;}
+
+  /* ---------------- toast ---------------- */
+  .toast-container{position:fixed;bottom:22px;right:22px;z-index:100;display:flex;flex-direction:column;gap:10px;}
+  .toast{
+    padding:14px 18px;border-radius:12px;font-size:13.5px;
+    display:flex;align-items:center;gap:10px;
+    background:linear-gradient(155deg, rgba(52,211,153,0.16), rgba(20,20,26,0.92));
+    border:1px solid rgba(52,211,153,0.35);
+    backdrop-filter:blur(14px);
+    animation:toastin .3s ease, toastout .3s ease 2.7s forwards;
+    box-shadow:0 20px 40px -18px rgba(0,0,0,0.6);
+  }
+  .toast .icon{color:var(--green);}
+  @keyframes toastin{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+  @keyframes toastout{to{opacity:0;transform:translateY(-6px);}}
+</style>
+</head>
+<body>
+
+<div class="ambient"></div>
+<div class="noise"></div>
+
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar glass" id="sidebar">
+    <div class="sb-logo">
+      <svg viewBox="0 0 24 24" fill="none"><polygon points="12,1 22,8 18,23 6,23 2,8" fill="url(#gLogo)"/><defs><linearGradient id="gLogo" x1="2" y1="1" x2="22" y2="23"><stop stop-color="#a5b4fc"/><stop offset="1" stop-color="#4338ca"/></linearGradient></defs></svg>
+      Kristal
+    </div>
+    <nav class="sb-nav">
+      <a class="sb-link active" data-view="overview">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 11.5 12 4l8 7.5"/><path d="M6 10v9.5a1 1 0 0 0 1 1h3.5v-6h3v6H17a1 1 0 0 0 1-1V10"/></svg>
+        Visão geral
+      </a>
+      <a class="sb-link" data-view="marketplace">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8.5 5.5 4h13L20 8.5"/><path d="M4 8.5h16v10.5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8.5Z"/><path d="M9 12.5a3 3 0 0 0 6 0"/></svg>
+        Marketplace
+      </a>
+      <a class="sb-link" data-view="anunciar">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+        Anunciar
+      </a>
+      <a class="sb-link" data-view="compras">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 7h12l1 13.5H5L6 7Z"/><path d="M9 7V6a3 3 0 0 1 6 0v1"/></svg>
+        Minhas compras
+      </a>
+      <a class="sb-link" data-view="config">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 13.5a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.56V19.5a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1-1.56 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.56-1H4.5a2 2 0 1 1 0-4h.09a1.7 1.7 0 0 0 1.56-1 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H10a1.7 1.7 0 0 0 1-1.56V4.5a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V10a1.7 1.7 0 0 0 1.56 1h.09a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.56 1Z"/></svg>
+        Configurações
+      </a>
+    </nav>
+
+    <div class="sb-profile">
+      <div class="avatar" id="sb-avatar">JS</div>
+      <div class="sb-profile-info">
+        <div class="name" id="sb-name">João Silva</div>
+        <div class="plan">conta verificada</div>
+      </div>
+      <a href="index.html" class="sb-logout" title="Sair">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg>
+      </a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <button class="mobile-toggle" id="mobile-toggle">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <div class="search-bar">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="global-search" type="text" placeholder="Buscar produtos, serviços, categorias…">
+      </div>
+      <div class="topbar-right">
+        <div class="bell">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>
+        </div>
+        <div class="avatar topbar-avatar" id="topbar-avatar">JS</div>
+      </div>
+    </div>
+
+    <!-- ================= OVERVIEW ================= -->
+    <section class="view active" id="view-overview">
+      <div class="page-head">
+        <span class="eyebrow">Painel</span>
+        <h1 id="greeting">Olá, João 👋</h1>
+        <p>Aqui está um resumo da sua atividade na Kristal.</p>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card glass">
+          <div class="lbl">Total gasto
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 1v22M17 5.5c0-2-2-3.5-5-3.5s-5 1.6-5 3.6 2 2.9 5 3.4 5 1.5 5 3.5-2 3.5-5 3.5-5-1.4-5-3.4"/></svg>
+          </div>
+          <div class="val" id="stat-total">R$ 1.218,00</div>
+          <div class="delta">4 compras registradas</div>
+        </div>
+        <div class="stat-card glass">
+          <div class="lbl">Anúncios ativos
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8.5 5.5 4h13L20 8.5"/><path d="M4 8.5h16v10.5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8.5Z"/></svg>
+          </div>
+          <div class="val" id="stat-ads">0</div>
+          <div class="delta" id="stat-ads-note" style="color:var(--text-dim);">nenhum anúncio publicado ainda</div>
+        </div>
+        <div class="stat-card glass">
+          <div class="lbl">Reputação
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9-6.2-3.3-6.2 3.3 1.2-6.9-5-4.9 6.9-1L12 2Z"/></svg>
+          </div>
+          <div class="val">4,9</div>
+          <div class="delta" style="color:var(--indigo-glow);">acima da média do marketplace</div>
+        </div>
+      </div>
+
+      <div class="overview-grid">
+        <div class="suggest-card glass">
+          <div class="glow"></div>
+          <span class="eyebrow">Sugestão inteligente</span>
+          <div class="suggest-amount">R$ 950,00</div>
+          <div class="suggest-bar"><div class="suggest-bar-fill" style="width:64%;"></div></div>
+          <p class="suggest-note">Com base no seu histórico dos últimos 3 meses (R$ 1.218,00 em compras), esse é o limite sugerido para o próximo mês sem comprometer o seu orçamento. Você já utilizou 64% da sua média mensal.</p>
+        </div>
+
+        <div class="quick-card glass">
+          <h3>Acesso rápido</h3>
+          <div class="quick-list">
+            <button class="quick-item nav-jump" data-view="anunciar">
+              <span class="l"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>Publicar novo anúncio</span>
+              <span class="r">→</span>
+            </button>
+            <button class="quick-item nav-jump" data-view="marketplace">
+              <span class="l"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>Explorar marketplace</span>
+              <span class="r">→</span>
+            </button>
+            <button class="quick-item nav-jump" data-view="config">
+              <span class="l"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-6.5 7-11.5A7 7 0 0 0 5 9.5C5 14.5 12 21 12 21Z"/></svg>Atualizar endereço</span>
+              <span class="r">→</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="recent-head">
+        <h3>Compras recentes</h3>
+        <a class="link-btn nav-jump" data-view="compras">Ver histórico completo</a>
+      </div>
+      <div class="glass" style="padding:6px 0;">
+        <div class="table-wrap">
+          <table>
+            <tbody id="recent-purchases-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= MARKETPLACE ================= -->
+    <section class="view" id="view-marketplace">
+      <div class="page-head">
+        <span class="eyebrow">Marketplace</span>
+        <h1>Explorar anúncios</h1>
+        <p>Encontre produtos e serviços de vendedores verificados.</p>
+      </div>
+
+      <div class="mk-toolbar">
+        <div class="mk-search">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input id="mk-search-input" type="text" placeholder="Pesquisar anúncios…">
+        </div>
+        <a href="#" class="btn-primary nav-jump" data-view="anunciar">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+          Anunciar
+        </a>
+      </div>
+
+      <div class="chip-row" id="chip-row"></div>
+
+      <div class="listing-grid" id="listing-grid"></div>
+    </section>
+
+    <!-- ================= ANUNCIAR ================= -->
+    <section class="view" id="view-anunciar">
+      <div class="page-head">
+        <span class="eyebrow">Novo anúncio</span>
+        <h1>Publicar um anúncio</h1>
+        <p>Preencha os dados do que você quer vender ou oferecer.</p>
+      </div>
+
+      <form id="ad-form" class="form-shell glass">
+        <div class="field">
+          <label>Foto do anúncio</label>
+          <div class="upload-box" id="ad-upload-box">
+            <div class="upload-preview" id="ad-upload-preview">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:24px;height:24px;"><rect x="3" y="5" width="18" height="14" rx="2.2"/><circle cx="9" cy="10.5" r="1.6"/><path d="m5 17 4.5-4.5 3 3L18 10l1 1.5"/></svg>
+            </div>
+            <div class="upload-text"><b>Clique para adicionar uma foto</b><span>PNG ou JPG, até 5MB</span></div>
+          </div>
+          <input type="file" id="ad-photo" accept="image/*" style="display:none;">
+        </div>
+
+        <div class="field">
+          <label for="ad-title">Título do anúncio</label>
+          <input id="ad-title" type="text" placeholder="Ex: iPhone 13 Pro seminovo 256GB" required>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="ad-cat">Categoria</label>
+            <select id="ad-cat" required>
+              <option value="Eletrônicos">Eletrônicos</option>
+              <option value="Casa & decoração">Casa & decoração</option>
+              <option value="Serviços profissionais">Serviços profissionais</option>
+              <option value="Moda & acessórios">Moda & acessórios</option>
+              <option value="Colecionáveis">Colecionáveis</option>
+              <option value="Veículos">Veículos</option>
+              <option value="Imóveis para locação">Imóveis para locação</option>
+              <option value="Arte & artesanato">Arte & artesanato</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="ad-price">Preço (R$)</label>
+            <input id="ad-price" type="number" min="0" step="0.01" placeholder="0,00" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="ad-location">Localização</label>
+          <input id="ad-location" type="text" placeholder="Cidade, UF">
+        </div>
+
+        <div class="field">
+          <label for="ad-desc">Descrição</label>
+          <textarea id="ad-desc" placeholder="Descreva o item ou serviço, condições, detalhes de entrega…"></textarea>
+        </div>
+
+        <button type="submit" class="btn-primary" style="width:100%;justify-content:center;">Publicar anúncio</button>
+      </form>
+    </section>
+
+    <!-- ================= COMPRAS ================= -->
+    <section class="view" id="view-compras">
+      <div class="page-head">
+        <span class="eyebrow">Histórico</span>
+        <h1>Minhas compras</h1>
+        <p>Acompanhe tudo o que você já adquiriu na Kristal.</p>
+      </div>
+
+      <div class="glass" style="padding:8px 0;">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Item</th><th>Vendedor</th><th>Data</th><th>Valor</th><th>Status</th></tr>
+            </thead>
+            <tbody id="purchases-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CONFIGURAÇÕES ================= -->
+    <section class="view" id="view-config">
+      <div class="page-head">
+        <span class="eyebrow">Configurações</span>
+        <h1>Sua conta</h1>
+        <p>Edite seus dados pessoais, foto e endereço.</p>
+      </div>
+
+      <form id="config-form" class="config-grid">
+        <div class="config-card glass">
+          <h3>Foto de perfil</h3>
+          <div class="avatar-edit">
+            <div class="avatar" id="config-avatar-preview">JS</div>
+            <div class="avatar-edit-actions">
+              <button type="button" class="btn-ghost btn-small" id="btn-change-photo">Alterar foto</button>
+              <button type="button" class="btn-ghost btn-small" id="btn-remove-photo">Remover</button>
+            </div>
+            <input type="file" id="config-photo" accept="image/*" style="display:none;">
+          </div>
+        </div>
+
+        <div class="config-card glass">
+          <h3>Dados pessoais</h3>
+          <div class="field">
+            <label for="cf-nome">Nome completo</label>
+            <input id="cf-nome" type="text">
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="cf-email">E-mail</label>
+              <input id="cf-email" type="email">
+            </div>
+            <div class="field">
+              <label for="cf-telefone">Telefone</label>
+              <input id="cf-telefone" type="tel">
+            </div>
+          </div>
+        </div>
+
+        <div class="config-card glass">
+          <h3>Endereço</h3>
+          <div class="field">
+            <label for="cf-endereco">Endereço</label>
+            <input id="cf-endereco" type="text">
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="cf-cep">CEP</label>
+              <input id="cf-cep" type="text">
+            </div>
+            <div class="field">
+              <label for="cf-cidade">Cidade</label>
+              <input id="cf-cidade" type="text">
+            </div>
+          </div>
+          <div class="field">
+            <label for="cf-estado">Estado</label>
+            <select id="cf-estado">
+              <option value="">UF</option>
+              <option>SP</option><option>RJ</option><option>MG</option><option>PR</option>
+              <option>RS</option><option>SC</option><option>BA</option><option>PE</option><option>outro</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="config-card glass">
+          <h3>Segurança</h3>
+          <div class="field">
+            <label for="cf-senha">Nova senha</label>
+            <input id="cf-senha" type="password" placeholder="Deixe em branco para manter a atual">
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary" style="justify-content:center;">Salvar alterações</button>
+      </form>
+    </section>
+
+  </div>
+</div>
+
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+/* ---------------- data & state ---------------- */
+const CATS = ["Eletrônicos","Casa & decoração","Serviços profissionais","Moda & acessórios","Colecionáveis","Veículos","Imóveis para locação","Arte & artesanato"];
+const GRAD = ["gA","gB","gC","gD"];
+
+const defaultProfile = {
+  name:"João Silva", email:"joao.silva@email.com", phone:"(11) 99999-9999",
+  address:"Av. Paulista, 1000 - Apto 42", cep:"01310-100", cidade:"São Paulo", estado:"SP",
+  photo:null
+};
+
+const defaultListings = [
+  {id:1, title:"iPhone 13 Pro seminovo 256GB", cat:"Eletrônicos", price:3200, seller:"Marcos T.", location:"São Paulo, SP", sold:false, photo:null},
+  {id:2, title:"Sofá retrátil 3 lugares", cat:"Casa & decoração", price:1450, seller:"Camila R.", location:"Curitiba, PR", sold:false, photo:null},
+  {id:3, title:"Consultoria em Marketing Digital", cat:"Serviços profissionais", price:600, seller:"Estúdio Nave", location:"Remoto", sold:false, photo:null},
+  {id:4, title:"Jaqueta de couro vintage", cat:"Moda & acessórios", price:340, seller:"Bruno V.", location:"Rio de Janeiro, RJ", sold:false, photo:null},
+  {id:5, title:"Quadro numerado edição especial", cat:"Colecionáveis", price:890, seller:"Rafael C.", location:"Belo Horizonte, MG", sold:false, photo:null},
+  {id:6, title:"Honda Civic 2019 - Completo", cat:"Veículos", price:78900, seller:"Autoshow BR", location:"Campinas, SP", sold:false, photo:null},
+  {id:7, title:"Apartamento 2 quartos para locação", cat:"Imóveis para locação", price:2100, seller:"Imob. Aurora", location:"São Paulo, SP", sold:false, photo:null},
+  {id:8, title:"Vaso de cerâmica artesanal", cat:"Arte & artesanato", price:210, seller:"Ateliê Terra", location:"Porto Alegre, RS", sold:false, photo:null}
+];
+
+const defaultPurchases = [
+  {item:"Fone de ouvido Bluetooth", seller:"SoundHub", date:"03/07/2026", value:259, status:"Concluída"},
+  {item:"Mesa de escritório", seller:"Marcenaria Lume", date:"22/06/2026", value:480, status:"Concluída"},
+  {item:"Camisa social slim", seller:"Trajo Store", date:"10/06/2026", value:129, status:"Concluída"},
+  {item:"Serviço de fotografia de produto", seller:"Studio Click", date:"28/05/2026", value:350, status:"Concluída"}
+];
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem('kristal_state');
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return {profile:{...defaultProfile}, listings:[...defaultListings], purchases:[...defaultPurchases]};
+}
+
+let state = loadState();
+
+// merge data seeded from cadastro.html, if present
+try{
+  const seed = localStorage.getItem('kristal_profile_seed');
+  if(seed){
+    const s = JSON.parse(seed);
+    state.profile = {...state.profile, ...s};
+    localStorage.removeItem('kristal_profile_seed');
+  }
+}catch(e){}
+
+function saveState(){
+  localStorage.setItem('kristal_state', JSON.stringify(state));
+}
+
+/* ---------------- helpers ---------------- */
+function fmt(v){
+  return v.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+}
+function initials(name){
+  const parts = (name||"").trim().split(/\s+/);
+  if(parts.length===0 || !parts[0]) return "?";
+  return (parts[0][0] + (parts[1] ? parts[1][0] : "")).toUpperCase();
+}
+function facetSVG(gradId){
+  return `<svg viewBox="0 0 200 210" fill="none">
+    <defs>
+      <linearGradient id="${gradId}A" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#818cf8"/><stop offset="1" stop-color="#3730a3"/></linearGradient>
+      <linearGradient id="${gradId}B" x1="1" y1="0" x2="0" y2="1"><stop stop-color="#a5b4fc"/><stop offset="1" stop-color="#4338ca"/></linearGradient>
+      <linearGradient id="${gradId}C" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#312e81"/><stop offset="1" stop-color="#6366f1"/></linearGradient>
+      <linearGradient id="${gradId}D" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#c7d2fe"/><stop offset="1" stop-color="#6366f1"/></linearGradient>
+    </defs>
+    <polygon points="100,5 160,55 100,87 40,55" fill="url(#${gradId}D)" opacity="0.92"/>
+    <polygon points="100,87 160,55 170,115 105,145" fill="url(#${gradId}A)"/>
+    <polygon points="100,87 40,55 30,115 95,145" fill="url(#${gradId}B)"/>
+    <polygon points="105,145 170,115 130,170 100,205" fill="url(#${gradId}A)" opacity="0.9"/>
+    <polygon points="95,145 30,115 70,170 100,205" fill="url(#${gradId}B)" opacity="0.9"/>
+  </svg>`;
+}
+function toast(msg){
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg><span>${msg}</span>`;
+  c.appendChild(t);
+  setTimeout(()=>t.remove(), 3000);
+}
+
+/* ---------------- render: profile ---------------- */
+function renderProfile(){
+  const p = state.profile;
+  document.getElementById('sb-name').textContent = p.name;
+  document.getElementById('greeting').textContent = `Olá, ${p.name.split(' ')[0]} 👋`;
+
+  const avatarEls = [document.getElementById('sb-avatar'), document.getElementById('topbar-avatar'), document.getElementById('config-avatar-preview')];
+  avatarEls.forEach(el=>{
+    if(p.photo){ el.innerHTML = `<img src="${p.photo}" alt="Foto de perfil">`; }
+    else{ el.textContent = initials(p.name); }
+  });
+
+  document.getElementById('cf-nome').value = p.name || "";
+  document.getElementById('cf-email').value = p.email || "";
+  document.getElementById('cf-telefone').value = p.phone || "";
+  document.getElementById('cf-endereco').value = p.address || "";
+  document.getElementById('cf-cep').value = p.cep || "";
+  document.getElementById('cf-cidade').value = p.cidade || "";
+  document.getElementById('cf-estado').value = p.estado || "";
+}
+
+/* ---------------- render: overview stats ---------------- */
+function renderOverview(){
+  const total = state.purchases.reduce((s,p)=>s+p.value,0);
+  document.getElementById('stat-total').textContent = fmt(total);
+
+  const activeAds = state.listings.filter(l=>l.mine && !l.sold).length;
+  document.getElementById('stat-ads').textContent = activeAds;
+  document.getElementById('stat-ads-note').textContent = activeAds > 0 ? `${activeAds} publicado(s) por você` : "nenhum anúncio publicado ainda";
+  document.getElementById('stat-ads-note').style.color = activeAds > 0 ? 'var(--indigo-glow)' : 'var(--text-dim)';
+
+  const recentBody = document.getElementById('recent-purchases-body');
+  recentBody.innerHTML = state.purchases.slice(0,3).map(rowHTML).join('');
+}
+
+function rowHTML(p){
+  return `<tr>
+    <td><div class="item-cell"><div class="item-thumb"></div>${p.item}</div></td>
+    <td style="color:var(--text-muted);">${p.seller}</td>
+    <td style="color:var(--text-muted);">${p.date}</td>
+    <td>${fmt(p.value)}</td>
+    <td><span class="status-pill">${p.status}</span></td>
+  </tr>`;
+}
+
+/* ---------------- render: purchases ---------------- */
+function renderPurchases(){
+  document.getElementById('purchases-body').innerHTML = state.purchases.map(rowHTML).join('');
+}
+
+/* ---------------- render: marketplace ---------------- */
+let activeCategory = "Todos";
+let searchQuery = "";
+
+function renderChips(){
+  const row = document.getElementById('chip-row');
+  const cats = ["Todos", ...CATS];
+  row.innerHTML = cats.map(c=>`<button class="chip ${c===activeCategory?'active':''}" data-cat="${c}">${c}</button>`).join('');
+  row.querySelectorAll('.chip').forEach(chip=>{
+    chip.addEventListener('click', ()=>{
+      activeCategory = chip.dataset.cat;
+      renderChips();
+      renderListings();
+    });
+  });
+}
+
+function renderListings(){
+  const grid = document.getElementById('listing-grid');
+  const q = searchQuery.trim().toLowerCase();
+  const filtered = state.listings.filter(l=>{
+    const matchesCat = activeCategory==="Todos" || l.cat===activeCategory;
+    const matchesQuery = !q || l.title.toLowerCase().includes(q) || l.cat.toLowerCase().includes(q) || l.seller.toLowerCase().includes(q);
+    return matchesCat && matchesQuery;
+  });
+
+  if(filtered.length===0){
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">Nenhum anúncio encontrado para essa busca.</div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(l=>{
+    const gradId = "g" + l.id;
+    const thumb = l.photo
+      ? `<img src="${l.photo}" alt="${l.title}" style="width:100%;height:100%;object-fit:cover;">`
+      : facetSVG(gradId);
+    return `<div class="listing-card glass">
+      <div class="listing-thumb">
+        ${thumb}
+        <span class="cat-badge">${l.cat}</span>
+        ${l.sold ? '<div class="sold-badge">Vendido</div>' : ''}
+      </div>
+      <div class="listing-body">
+        <div class="listing-title">${l.title}</div>
+        <div class="listing-meta">${l.seller} · ${l.location}</div>
+        <div class="listing-foot">
+          <span class="listing-price">${fmt(l.price)}</span>
+          <button class="listing-buy" data-id="${l.id}" ${l.sold?'disabled':''}>${l.sold?'Vendido':'Comprar'}</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  grid.querySelectorAll('.listing-buy').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id = Number(btn.dataset.id);
+      buyListing(id);
+    });
+  });
+}
+
+function buyListing(id){
+  const listing = state.listings.find(l=>l.id===id);
+  if(!listing || listing.sold) return;
+  listing.sold = true;
+  state.purchases.unshift({
+    item:listing.title, seller:listing.seller,
+    date:new Date().toLocaleDateString('pt-BR'),
+    value:listing.price, status:"Concluída"
+  });
+  saveState();
+  renderListings();
+  renderOverview();
+  renderPurchases();
+  toast("Compra registrada com sucesso!");
+}
+
+/* ---------------- ad form ---------------- */
+let adPhotoData = null;
+
+document.getElementById('ad-upload-box').addEventListener('click', ()=> document.getElementById('ad-photo').click());
+document.getElementById('ad-photo').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    adPhotoData = reader.result;
+    document.getElementById('ad-upload-preview').innerHTML = `<img src="${adPhotoData}" alt="Prévia">`;
+  };
+  reader.readAsDataURL(file);
+});
+
+document.getElementById('ad-form').addEventListener('submit', (e)=>{
+  e.preventDefault();
+  const title = document.getElementById('ad-title').value.trim();
+  const cat = document.getElementById('ad-cat').value;
+  const price = parseFloat(document.getElementById('ad-price').value || "0");
+  const location = document.getElementById('ad-location').value.trim() || "Não informado";
+  if(!title || !price){ return; }
+
+  const newListing = {
+    id: Date.now(),
+    title, cat, price,
+    seller: state.profile.name || "Você",
+    location, sold:false, mine:true,
+    photo: adPhotoData
+  };
+  state.listings.unshift(newListing);
+  saveState();
+
+  e.target.reset();
+  adPhotoData = null;
+  document.getElementById('ad-upload-preview').innerHTML = `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:24px;height:24px;"><rect x="3" y="5" width="18" height="14" rx="2.2"/><circle cx="9" cy="10.5" r="1.6"/><path d="m5 17 4.5-4.5 3 3L18 10l1 1.5"/></svg>`;
+
+  renderOverview();
+  activeCategory = "Todos";
+  renderChips();
+  renderListings();
+  switchView('marketplace');
+  toast("Anúncio publicado com sucesso!");
+});
+
+/* ---------------- config form ---------------- */
+let configPhotoData = undefined;
+
+document.getElementById('btn-change-photo').addEventListener('click', ()=> document.getElementById('config-photo').click());
+document.getElementById('config-photo').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    configPhotoData = reader.result;
+    document.getElementById('config-avatar-preview').innerHTML = `<img src="${configPhotoData}" alt="Foto de perfil">`;
+  };
+  reader.readAsDataURL(file);
+});
+document.getElementById('btn-remove-photo').addEventListener('click', ()=>{
+  configPhotoData = null;
+  document.getElementById('config-avatar-preview').innerHTML = initials(document.getElementById('cf-nome').value);
+});
+
+document.getElementById('config-form').addEventListener('submit', (e)=>{
+  e.preventDefault();
+  state.profile.name = document.getElementById('cf-nome').value.trim() || state.profile.name;
+  state.profile.email = document.getElementById('cf-email').value.trim();
+  state.profile.phone = document.getElementById('cf-telefone').value.trim();
+  state.profile.address = document.getElementById('cf-endereco').value.trim();
+  state.profile.cep = document.getElementById('cf-cep').value.trim();
+  state.profile.cidade = document.getElementById('cf-cidade').value.trim();
+  state.profile.estado = document.getElementById('cf-estado').value;
+  if(configPhotoData !== undefined){ state.profile.photo = configPhotoData; }
+  saveState();
+  renderProfile();
+  toast("Dados atualizados com sucesso!");
+});
+
+/* ---------------- search ---------------- */
+document.getElementById('global-search').addEventListener('input', (e)=>{
+  searchQuery = e.target.value;
+  document.getElementById('mk-search-input').value = searchQuery;
+  switchView('marketplace');
+  renderListings();
+});
+document.getElementById('mk-search-input').addEventListener('input', (e)=>{
+  searchQuery = e.target.value;
+  document.getElementById('global-search').value = searchQuery;
+  renderListings();
+});
+
+/* ---------------- navigation ---------------- */
+function switchView(view){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+view).classList.add('active');
+  document.querySelectorAll('.sb-link').forEach(l=>l.classList.toggle('active', l.dataset.view===view));
+  document.getElementById('sidebar').classList.remove('open');
+}
+document.querySelectorAll('.sb-link').forEach(link=>{
+  link.addEventListener('click', (e)=>{
+    e.preventDefault();
+    switchView(link.dataset.view);
+  });
+});
+document.querySelectorAll('.nav-jump').forEach(el=>{
+  el.addEventListener('click', (e)=>{
+    e.preventDefault();
+    switchView(el.dataset.view);
+  });
+});
+document.getElementById('mobile-toggle').addEventListener('click', ()=>{
+  document.getElementById('sidebar').classList.toggle('open');
+});
+
+/* ---------------- init ---------------- */
+renderProfile();
+renderOverview();
+renderPurchases();
+renderChips();
+renderListings();
+saveState();
+</script>
+</body>
+</html>
