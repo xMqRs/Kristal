@@ -386,7 +386,20 @@
 
   document.getElementById('signup-form').addEventListener('submit', (e)=>{
     e.preventDefault();
-    // Integração de envio a ser conectada ao backend da Kristal.
+    const profileSeed = {
+      name: document.getElementById('nome').value.trim() || "Novo usuário",
+      email: document.getElementById('email').value.trim(),
+      phone: document.getElementById('telefone').value.trim(),
+      address: document.getElementById('endereco').value.trim(),
+      cep: document.getElementById('cep').value.trim(),
+      cidade: document.getElementById('cidade').value.trim(),
+      estado: document.getElementById('estado').value
+    };
+    try{
+      localStorage.setItem('kristal_profile_seed', JSON.stringify(profileSeed));
+      localStorage.removeItem('kristal_state');
+    }catch(err){}
+    window.location.href = 'dashboard.html';
   });
 </script>
 
