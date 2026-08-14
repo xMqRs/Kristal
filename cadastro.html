@@ -4,9 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Criar conta — Kristal</title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Inter:wght@300..700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
 <style>
   :root{
     --bg-black:#07070a;
@@ -26,7 +28,12 @@
     --radius:20px;
   }
 
-  *{margin:0;padding:0;box-sizing:border-box;}
+  *{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+  }
+
   body{
     background:var(--bg-black);
     color:var(--text-primary);
@@ -39,55 +46,94 @@
   }
 
   .ambient{
-    position:fixed;inset:0;z-index:0;pointer-events:none;
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
     background:
       radial-gradient(55vw 55vw at 85% -10%, rgba(99,102,241,0.16), transparent 60%),
       radial-gradient(45vw 45vw at 5% 90%, rgba(55,48,163,0.16), transparent 60%);
   }
+
   .noise{
-    position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0.035;
+    position:fixed;
+    inset:0;
+    z-index:1;
+    pointer-events:none;
+    opacity:0.035;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
-  a{color:inherit;text-decoration:none;}
+  a{
+    color:inherit;
+    text-decoration:none;
+  }
 
-  h1,h2,h3,.display{font-family:'Space Grotesk',sans-serif;letter-spacing:-0.02em;line-height:1.08;}
+  h1,h2,h3,.display{
+    font-family:'Space Grotesk',sans-serif;
+    letter-spacing:-0.02em;
+    line-height:1.08;
+  }
 
   .eyebrow{
     font-family:'IBM Plex Mono',monospace;
-    font-size:11.5px;letter-spacing:0.14em;text-transform:uppercase;
+    font-size:11.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
     color:var(--indigo-glow);
-    display:inline-flex;align-items:center;gap:9px;
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
     padding:7px 13px;
     border:1px solid rgba(165,180,252,0.3);
     border-radius:8px;
     background:rgba(99,102,241,0.08);
   }
+
   .eyebrow::before{
-    content:'';width:6px;height:6px;background:var(--indigo);
+    content:'';
+    width:6px;
+    height:6px;
+    background:var(--indigo);
     clip-path:polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
     display:inline-block;
   }
 
   .glass{
-    background:linear-gradient(155deg, var(--surface-strong), var(--surface) 60%);
+    background:linear-gradient(155deg,var(--surface-strong),var(--surface) 60%);
     border:1px solid var(--border);
     border-radius:var(--radius);
     backdrop-filter:blur(22px) saturate(140%);
     -webkit-backdrop-filter:blur(22px) saturate(140%);
-    box-shadow:0 1px 0 0 rgba(255,255,255,0.08) inset, 0 30px 60px -30px rgba(0,0,0,0.6);
+    box-shadow:
+      0 1px 0 0 rgba(255,255,255,0.08) inset,
+      0 30px 60px -30px rgba(0,0,0,0.6);
     position:relative;
   }
+
   .glass::after{
-    content:'';position:absolute;top:0;left:14%;right:14%;height:1px;
-    background:linear-gradient(90deg, transparent, rgba(255,255,255,0.32), transparent);
+    content:'';
+    position:absolute;
+    top:0;
+    left:14%;
+    right:14%;
+    height:1px;
+    background:linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,0.32),
+      transparent
+    );
   }
 
   main{
     flex:1;
-    display:flex;align-items:center;justify-content:center;
+    display:flex;
+    align-items:center;
+    justify-content:center;
     padding:56px 24px;
-    position:relative;z-index:2;
+    position:relative;
+    z-index:2;
   }
 
   .auth-shell{
@@ -98,30 +144,49 @@
     gap:22px;
     align-items:stretch;
   }
-  @media(max-width:880px){ .auth-shell{grid-template-columns:1fr;} .promo{min-height:auto;} }
 
-  /* ---------- left promo panel ---------- */
+  @media(max-width:880px){
+    .auth-shell{
+      grid-template-columns:1fr;
+    }
+
+    .promo{
+      min-height:auto;
+    }
+  }
+
   .promo{
     padding:38px 34px;
-    display:flex;flex-direction:column;
+    display:flex;
+    flex-direction:column;
     justify-content:space-between;
   }
+
   .promo h1{
     font-size:clamp(30px,3.4vw,38px);
     font-weight:500;
     margin:22px 0 16px;
   }
+
   .promo h1 em{
     font-style:normal;
-    background:linear-gradient(100deg, var(--indigo-glow), var(--indigo) 65%);
-    -webkit-background-clip:text;background-clip:text;color:transparent;
+    background:linear-gradient(
+      100deg,
+      var(--indigo-glow),
+      var(--indigo) 65%
+    );
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
   }
+
   .promo p{
     color:var(--text-muted);
     font-size:14.5px;
     line-height:1.7;
     max-width:280px;
   }
+
   .promo-visual{
     margin-top:32px;
     border-radius:16px;
@@ -129,43 +194,101 @@
     overflow:hidden;
     position:relative;
     aspect-ratio:16/11;
-    background:radial-gradient(120% 120% at 30% 0%, rgba(99,102,241,0.35), var(--bg-dark-2) 65%);
-    display:flex;align-items:center;justify-content:center;
+    background:
+      radial-gradient(
+        120% 120% at 30% 0%,
+        rgba(99,102,241,0.35),
+        var(--bg-dark-2) 65%
+      );
+    display:flex;
+    align-items:center;
+    justify-content:center;
   }
-  .promo-visual svg{width:62%;filter:drop-shadow(0 18px 26px rgba(0,0,0,0.5));}
+
+  .promo-visual svg{
+    width:62%;
+    filter:drop-shadow(0 18px 26px rgba(0,0,0,0.5));
+  }
+
   .promo-tag{
-    position:absolute;left:14px;bottom:14px;
+    position:absolute;
+    left:14px;
+    bottom:14px;
     font-family:'IBM Plex Mono',monospace;
-    font-size:11px;letter-spacing:0.04em;
+    font-size:11px;
+    letter-spacing:0.04em;
     background:rgba(7,7,10,0.65);
     border:1px solid var(--border-strong);
-    padding:6px 11px;border-radius:8px;
+    padding:6px 11px;
+    border-radius:8px;
     backdrop-filter:blur(8px);
-    display:flex;align-items:center;gap:7px;
+    display:flex;
+    align-items:center;
+    gap:7px;
   }
-  .promo-tag::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--indigo-glow);box-shadow:0 0 8px var(--indigo-glow);}
 
-  /* ---------- form panel ---------- */
-  .form-panel{padding:40px 44px 34px;}
-  @media(max-width:560px){ .form-panel{padding:30px 22px 26px;} }
+  .promo-tag::before{
+    content:'';
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:var(--indigo-glow);
+    box-shadow:0 0 8px var(--indigo-glow);
+  }
 
-  .form-panel h2{font-size:23px;font-weight:500;}
-  .form-panel > p{color:var(--text-muted);font-size:13.5px;margin-top:6px;margin-bottom:30px;}
+  .form-panel{
+    padding:40px 44px 34px;
+  }
 
-  .field{margin-bottom:20px;}
+  @media(max-width:560px){
+    .form-panel{
+      padding:30px 22px 26px;
+    }
+  }
+
+  .form-panel h2{
+    font-size:23px;
+    font-weight:500;
+  }
+
+  .form-panel > p{
+    color:var(--text-muted);
+    font-size:13.5px;
+    margin-top:6px;
+    margin-bottom:30px;
+  }
+
+  .field{
+    margin-bottom:20px;
+  }
+
   .field label{
     display:block;
     font-family:'IBM Plex Mono',monospace;
-    font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase;
+    font-size:10.5px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
     color:var(--text-dim);
     margin-bottom:9px;
   }
-  .input-wrap{position:relative;}
-  .input-wrap svg{
-    position:absolute;left:14px;top:50%;transform:translateY(-50%);
-    width:16px;height:16px;color:var(--text-dim);pointer-events:none;
+
+  .input-wrap{
+    position:relative;
   }
-  .input-wrap input, .input-wrap select{
+
+  .input-wrap svg{
+    position:absolute;
+    left:14px;
+    top:50%;
+    transform:translateY(-50%);
+    width:16px;
+    height:16px;
+    color:var(--text-dim);
+    pointer-events:none;
+  }
+
+  .input-wrap input,
+  .input-wrap select{
     width:100%;
     padding:13px 14px 13px 40px;
     background:rgba(255,255,255,0.03);
@@ -175,49 +298,122 @@
     font-family:'Inter',sans-serif;
     font-size:14px;
     outline:none;
-    transition:border-color .2s ease, background .2s ease, box-shadow .2s ease;
+    transition:
+      border-color .2s ease,
+      background .2s ease,
+      box-shadow .2s ease;
   }
-  .input-wrap select{padding-left:14px;appearance:none;-webkit-appearance:none;cursor:pointer;}
-  .input-wrap.has-icon select{padding-left:40px;}
-  .input-wrap::before{display:none;}
-  .input-wrap input::placeholder{color:var(--text-dim);}
-  .input-wrap input:focus, .input-wrap select:focus{
+
+  .input-wrap select{
+    padding-left:14px;
+    appearance:none;
+    -webkit-appearance:none;
+    cursor:pointer;
+  }
+
+  .input-wrap.has-icon select{
+    padding-left:40px;
+  }
+
+  .input-wrap input::placeholder{
+    color:var(--text-dim);
+  }
+
+  .input-wrap input:focus,
+  .input-wrap select:focus{
     border-color:rgba(165,180,252,0.55);
     background:rgba(99,102,241,0.06);
     box-shadow:0 0 0 3px rgba(99,102,241,0.14);
   }
+
   .select-caret{
-    position:absolute;right:12px;top:50%;transform:translateY(-50%);
-    width:14px;height:14px;color:var(--text-dim);pointer-events:none;
+    position:absolute;
+    right:12px;
+    top:50%;
+    transform:translateY(-50%);
+    width:14px;
+    height:14px;
+    color:var(--text-dim);
+    pointer-events:none;
   }
 
-  .field-row{display:grid;gap:16px;}
-  .field-row.two{grid-template-columns:1fr 1fr;}
-  .field-row.three{grid-template-columns:1fr 1fr 0.7fr;}
-  @media(max-width:560px){ .field-row.two, .field-row.three{grid-template-columns:1fr;} }
+  .field-row{
+    display:grid;
+    gap:16px;
+  }
+
+  .field-row.two{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .field-row.three{
+    grid-template-columns:1fr 1fr 0.7fr;
+  }
+
+  @media(max-width:560px){
+    .field-row.two,
+    .field-row.three{
+      grid-template-columns:1fr;
+    }
+  }
 
   .pw-toggle{
-    position:absolute;right:14px;top:50%;transform:translateY(-50%);
-    background:none;border:none;color:var(--text-dim);cursor:pointer;
-    display:flex;align-items:center;padding:0;
+    position:absolute;
+    right:14px;
+    top:50%;
+    transform:translateY(-50%);
+    background:none;
+    border:none;
+    color:var(--text-dim);
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    padding:0;
   }
-  .pw-toggle svg{position:static;transform:none;width:17px;height:17px;}
-  .pw-hint{font-size:11.5px;color:var(--text-dim);margin-top:8px;}
+
+  .pw-toggle svg{
+    position:static;
+    transform:none;
+    width:17px;
+    height:17px;
+  }
+
+  .pw-hint{
+    font-size:11.5px;
+    color:var(--text-dim);
+    margin-top:8px;
+  }
 
   .btn-submit{
     width:100%;
     margin-top:6px;
-    padding:15px;border-radius:12px;
+    padding:15px;
+    border-radius:12px;
     font-family:'Inter',sans-serif;
-    font-weight:600;font-size:15px;
-    background:linear-gradient(155deg, var(--indigo), var(--indigo-deep));
+    font-weight:600;
+    font-size:15px;
+    background:linear-gradient(
+      155deg,
+      var(--indigo),
+      var(--indigo-deep)
+    );
     border:1px solid rgba(165,180,252,0.4);
-    box-shadow:0 12px 30px -10px rgba(99,102,241,0.75), 0 1px 0 rgba(255,255,255,0.25) inset;
+    box-shadow:
+      0 12px 30px -10px rgba(99,102,241,0.75),
+      0 1px 0 rgba(255,255,255,0.25) inset;
     color:#fff;
     cursor:pointer;
-    transition:transform .2s ease, box-shadow .2s ease;
+    transition:
+      transform .2s ease,
+      box-shadow .2s ease;
   }
-  .btn-submit:hover{transform:translateY(-2px); box-shadow:0 16px 34px -8px rgba(99,102,241,0.9), 0 1px 0 rgba(255,255,255,0.25) inset;}
+
+  .btn-submit:hover{
+    transform:translateY(-2px);
+    box-shadow:
+      0 16px 34px -8px rgba(99,102,241,0.9),
+      0 1px 0 rgba(255,255,255,0.25) inset;
+  }
 
   .form-footnote{
     text-align:center;
@@ -225,182 +421,676 @@
     font-size:13.5px;
     color:var(--text-muted);
   }
-  .form-footnote a{color:var(--indigo-glow);font-weight:600;text-decoration:underline;text-underline-offset:3px;}
+
+  .form-footnote a{
+    color:var(--indigo-glow);
+    font-weight:600;
+    text-decoration:underline;
+    text-underline-offset:3px;
+  }
+
+  .form-footnote a:hover{
+    color:#c7d2fe;
+  }
 
   footer{
-    position:relative;z-index:2;
+    position:relative;
+    z-index:2;
     padding:22px 24px;
-    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;
-    font-size:12.5px;color:var(--text-dim);
-    max-width:1080px;margin:0 auto;width:100%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:10px;
+    font-size:12.5px;
+    color:var(--text-dim);
+    max-width:1080px;
+    margin:0 auto;
+    width:100%;
   }
-  footer .flinks{display:flex;gap:22px;}
-  footer .flinks a{color:var(--text-dim);transition:color .2s ease;}
-  footer .flinks a:hover{color:var(--text-muted);}
+
+  footer .flinks{
+    display:flex;
+    gap:22px;
+  }
+
+  footer .flinks a{
+    color:var(--text-dim);
+    transition:color .2s ease;
+  }
+
+  footer .flinks a:hover{
+    color:var(--text-muted);
+  }
+
+  /* Mensagem de erro/sucesso */
+  .message{
+    display:none;
+    margin-top:15px;
+    padding:12px 14px;
+    border-radius:10px;
+    font-size:13px;
+    line-height:1.4;
+  }
+
+  .message.error{
+    display:block;
+    color:#fecaca;
+    background:rgba(239,68,68,.08);
+    border:1px solid rgba(239,68,68,.22);
+  }
 </style>
 </head>
+
 <body>
 
 <div class="ambient"></div>
 <div class="noise"></div>
 
 <main>
+
   <div class="auth-shell">
 
-    <!-- LEFT PROMO PANEL -->
+    <!-- PAINEL ESQUERDO -->
     <div class="promo glass">
+
       <div>
         <span class="eyebrow">Acesso premium</span>
-        <h1>Conecte-<br>se à nova<br><em>era digital</em></h1>
-        <p>Cadastre a sua conta e conecte-se a um modelo de marketplace revolucionário, sofisticação, utilidade e realize suas vendas de forma segura.</p>
+
+        <h1>
+          Conecte-<br>
+          se à nova<br>
+          <em>era digital</em>
+        </h1>
+
+        <p>
+          Cadastre a sua conta e conecte-se a um modelo de marketplace
+          revolucionário, sofisticação, utilidade e realize suas vendas
+          de forma segura.
+        </p>
       </div>
 
       <div class="promo-visual">
+
         <svg viewBox="0 0 400 420" fill="none">
+
           <defs>
-            <linearGradient id="fA" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#818cf8"/><stop offset="1" stop-color="#3730a3"/></linearGradient>
-            <linearGradient id="fB" x1="1" y1="0" x2="0" y2="1"><stop stop-color="#a5b4fc"/><stop offset="1" stop-color="#4338ca"/></linearGradient>
-            <linearGradient id="fC" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#312e81"/><stop offset="1" stop-color="#6366f1"/></linearGradient>
-            <linearGradient id="fD" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#c7d2fe"/><stop offset="1" stop-color="#6366f1"/></linearGradient>
+
+            <linearGradient id="fA" x1="0" y1="0" x2="1" y2="1">
+              <stop stop-color="#818cf8"/>
+              <stop offset="1" stop-color="#3730a3"/>
+            </linearGradient>
+
+            <linearGradient id="fB" x1="1" y1="0" x2="0" y2="1">
+              <stop stop-color="#a5b4fc"/>
+              <stop offset="1" stop-color="#4338ca"/>
+            </linearGradient>
+
+            <linearGradient id="fC" x1="0" y1="1" x2="1" y2="0">
+              <stop stop-color="#312e81"/>
+              <stop offset="1" stop-color="#6366f1"/>
+            </linearGradient>
+
+            <linearGradient id="fD" x1="0" y1="0" x2="0" y2="1">
+              <stop stop-color="#c7d2fe"/>
+              <stop offset="1" stop-color="#6366f1"/>
+            </linearGradient>
+
           </defs>
-          <polygon points="200,10 320,110 200,175 80,110" fill="url(#fD)" opacity="0.92"/>
-          <polygon points="200,175 320,110 340,230 210,290" fill="url(#fA)"/>
-          <polygon points="200,175 80,110 60,230 190,290" fill="url(#fB)"/>
-          <polygon points="200,175 210,290 200,410 190,290" fill="url(#fC)"/>
-          <polygon points="210,290 340,230 260,340 200,410" fill="url(#fA)" opacity="0.9"/>
-          <polygon points="190,290 60,230 140,340 200,410" fill="url(#fB)" opacity="0.9"/>
+
+          <polygon points="200,10 320,110 200,175 80,110"
+                   fill="url(#fD)" opacity="0.92"/>
+
+          <polygon points="200,175 320,110 340,230 210,290"
+                   fill="url(#fA)"/>
+
+          <polygon points="200,175 80,110 60,230 190,290"
+                   fill="url(#fB)"/>
+
+          <polygon points="200,175 210,290 200,410 190,290"
+                   fill="url(#fC)"/>
+
+          <polygon points="210,290 340,230 260,340 200,410"
+                   fill="url(#fA)" opacity="0.9"/>
+
+          <polygon points="190,290 60,230 140,340 200,410"
+                   fill="url(#fB)" opacity="0.9"/>
+
         </svg>
-        <span class="promo-tag">Vendas e Pagamentos Fáceis</span>
+
+        <span class="promo-tag">
+          Vendas e Pagamentos Fáceis
+        </span>
+
       </div>
+
     </div>
 
-    <!-- RIGHT FORM PANEL -->
+
+    <!-- FORMULÁRIO -->
     <div class="form-panel glass">
+
       <h2>Cadastro de Cliente</h2>
-      <p>Preencha os dados abaixo para iniciar sua jornada.</p>
+
+      <p>
+        Preencha os dados abaixo para iniciar sua jornada.
+      </p>
 
       <form id="signup-form">
-        <div class="field">
-          <label for="nome">Nome completo</label>
-          <div class="input-wrap">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c1.5-4 5-5.5 7.5-5.5s6 1.5 7.5 5.5"/></svg>
-            <input id="nome" type="text" placeholder="Digite seu nome completo" autocomplete="name" required>
-          </div>
-        </div>
 
         <div class="field">
-          <label for="email">E-mail</label>
+
+          <label for="nome">
+            Nome completo
+          </label>
+
           <div class="input-wrap">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg>
-            <input id="email" type="email" placeholder="seu.nome@provedor.com" autocomplete="email" required>
+
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="1.8">
+
+              <circle cx="12" cy="8" r="3.5"/>
+              <path d="M4.5 20c1.5-4 5-5.5 7.5-5.5s6 1.5 7.5 5.5"/>
+
+            </svg>
+
+            <input
+              id="nome"
+              type="text"
+              placeholder="Digite seu nome completo"
+              autocomplete="name"
+              required
+            >
+
           </div>
+
         </div>
 
+
         <div class="field">
-          <label for="senha">Senha</label>
+
+          <label for="email">
+            E-mail
+          </label>
+
           <div class="input-wrap">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10.5" width="14" height="9.5" rx="2.2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>
-            <input id="senha" type="password" placeholder="Crie uma senha segura" autocomplete="new-password" minlength="8" required style="padding-right:42px;">
-            <button type="button" class="pw-toggle" id="pw-toggle" aria-label="Mostrar senha">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="1.8">
+
+              <rect x="3" y="5" width="18" height="14" rx="2.5"/>
+              <path d="M3.5 6.5 12 13l8.5-6.5"/>
+
+            </svg>
+
+            <input
+              id="email"
+              type="email"
+              placeholder="seu.nome@provedor.com"
+              autocomplete="email"
+              required
+            >
+
+          </div>
+
+        </div>
+
+
+        <div class="field">
+
+          <label for="senha">
+            Senha
+          </label>
+
+          <div class="input-wrap">
+
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="1.8">
+
+              <rect x="5" y="10.5" width="14" height="9.5" rx="2.2"/>
+              <path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/>
+
+            </svg>
+
+            <input
+              id="senha"
+              type="password"
+              placeholder="Crie uma senha segura"
+              autocomplete="new-password"
+              minlength="8"
+              required
+              style="padding-right:42px;"
+            >
+
+            <button
+              type="button"
+              class="pw-toggle"
+              id="pw-toggle"
+              aria-label="Mostrar senha"
+            >
+
+              <svg viewBox="0 0 24 24"
+                   fill="none"
+                   stroke="currentColor"
+                   stroke-width="1.8">
+
+                <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z"/>
+                <circle cx="12" cy="12" r="3"/>
+
+              </svg>
+
             </button>
+
           </div>
-          <p class="pw-hint">Use ao menos 8 caracteres, com letras e números.</p>
+
+          <p class="pw-hint">
+            Use ao menos 8 caracteres, com letras e números.
+          </p>
+
         </div>
+
 
         <div class="field-row two">
+
           <div class="field">
-            <label for="telefone">Telefone</label>
+
+            <label for="telefone">
+              Telefone
+            </label>
+
             <div class="input-wrap">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5c0 8.3 6.7 15 15 15l2-3.5-5-2-1.5 1.8A12 12 0 0 1 7.7 9.8L9.5 8.3l-2-5L4 5Z"/></svg>
-              <input id="telefone" type="tel" placeholder="(11) 99999-9999" autocomplete="tel">
+
+              <svg viewBox="0 0 24 24"
+                   fill="none"
+                   stroke="currentColor"
+                   stroke-width="1.8">
+
+                <path d="M4 5c0 8.3 6.7 15 15 15l2-3.5-5-2-1.5 1.8A12 12 0 0 1 7.7 9.8L9.5 8.3l-2-5L4 5Z"/>
+
+              </svg>
+
+              <input
+                id="telefone"
+                type="tel"
+                placeholder="(11) 99999-9999"
+                autocomplete="tel"
+              >
+
             </div>
+
           </div>
+
+
           <div class="field">
-            <label for="cpf">CPF</label>
+
+            <label for="cpf">
+              CPF
+            </label>
+
             <div class="input-wrap">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5.5" width="18" height="13" rx="2.2"/><path d="M6.5 9.5h4M6.5 13h7"/></svg>
-              <input id="cpf" type="text" placeholder="000.000.000-00">
+
+              <svg viewBox="0 0 24 24"
+                   fill="none"
+                   stroke="currentColor"
+                   stroke-width="1.8">
+
+                <rect x="3" y="5.5" width="18" height="13" rx="2.2"/>
+                <path d="M6.5 9.5h4M6.5 13h7"/>
+
+              </svg>
+
+              <input
+                id="cpf"
+                type="text"
+                placeholder="000.000.000-00"
+              >
+
             </div>
+
           </div>
+
         </div>
+
 
         <div class="field">
-          <label for="endereco">Endereço</label>
+
+          <label for="endereco">
+            Endereço
+          </label>
+
           <div class="input-wrap">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-6.5 7-11.5A7 7 0 0 0 5 9.5C5 14.5 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.3"/></svg>
-            <input id="endereco" type="text" placeholder="Av. Paulista, 1000 - Apto 42" autocomplete="street-address">
+
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="1.8">
+
+              <path d="M12 21s7-6.5 7-11.5A7 7 0 0 0 5 9.5C5 14.5 12 21 12 21Z"/>
+              <circle cx="12" cy="9.5" r="2.3"/>
+
+            </svg>
+
+            <input
+              id="endereco"
+              type="text"
+              placeholder="Av. Paulista, 1000 - Apto 42"
+              autocomplete="street-address"
+            >
+
           </div>
+
         </div>
+
 
         <div class="field-row three">
+
           <div class="field">
-            <label for="cep">CEP</label>
+
+            <label for="cep">
+              CEP
+            </label>
+
             <div class="input-wrap">
-              <input id="cep" type="text" placeholder="01310-100" style="padding-left:14px;">
+
+              <input
+                id="cep"
+                type="text"
+                placeholder="01310-100"
+                style="padding-left:14px;"
+              >
+
             </div>
+
           </div>
+
+
           <div class="field">
-            <label for="cidade">Cidade</label>
+
+            <label for="cidade">
+              Cidade
+            </label>
+
             <div class="input-wrap">
-              <input id="cidade" type="text" placeholder="São Paulo" style="padding-left:14px;">
+
+              <input
+                id="cidade"
+                type="text"
+                placeholder="São Paulo"
+                style="padding-left:14px;"
+              >
+
             </div>
+
           </div>
+
+
           <div class="field">
-            <label for="estado">Estado</label>
+
+            <label for="estado">
+              Estado
+            </label>
+
             <div class="input-wrap">
-              <select id="estado" style="padding-left:14px;">
+
+              <select
+                id="estado"
+                style="padding-left:14px;"
+              >
+
                 <option value="">UF</option>
-                <option>SP</option><option>RJ</option><option>MG</option><option>PR</option>
-                <option>RS</option><option>SC</option><option>BA</option><option>PE</option>
+                <option>SP</option>
+                <option>RJ</option>
+                <option>MG</option>
+                <option>PR</option>
+                <option>RS</option>
+                <option>SC</option>
+                <option>BA</option>
+                <option>PE</option>
                 <option>outro</option>
+
               </select>
-              <svg class="select-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+
+              <svg
+                class="select-caret"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+
+                <path d="m6 9 6 6 6-6"/>
+
+              </svg>
+
             </div>
+
           </div>
+
         </div>
 
-        <button type="submit" class="btn-submit">Cadastrar</button>
-        <p class="form-footnote">Já possui cadastro? <a href="entrar.html">Entrar</a></p>
+
+        <button
+          type="submit"
+          class="btn-submit"
+        >
+          Cadastrar
+        </button>
+
+
+        <!-- LINK PARA LOGIN -->
+        <p class="form-footnote">
+          Já possui cadastro?
+          <a href="login.html">
+            Entrar
+          </a>
+        </p>
+
+        <div id="message" class="message"></div>
+
       </form>
+
     </div>
 
   </div>
+
 </main>
 
+
 <footer>
-  <span>© 2026 Kristal Inc. Todos os direitos reservados.</span>
+
+  <span>
+    © 2026 Kristal Inc. Todos os direitos reservados.
+  </span>
+
   <div class="flinks">
-    <a href="#">Políticas de Privacidade</a>
-    <a href="#">Termos de Serviço</a>
+
+    <a href="#">
+      Políticas de Privacidade
+    </a>
+
+    <a href="#">
+      Termos de Serviço
+    </a>
+
   </div>
+
 </footer>
 
+
 <script>
+
+  /* ==========================================
+     MOSTRAR / OCULTAR SENHA
+  ========================================== */
+
   const pwToggle = document.getElementById('pw-toggle');
   const pwInput = document.getElementById('senha');
-  pwToggle.addEventListener('click', ()=>{
+
+  pwToggle.addEventListener('click', () => {
+
     const isPw = pwInput.type === 'password';
+
     pwInput.type = isPw ? 'text' : 'password';
+
   });
 
-  document.getElementById('signup-form').addEventListener('submit', (e)=>{
-    e.preventDefault();
-    const profileSeed = {
-      name: document.getElementById('nome').value.trim() || "Novo usuário",
-      email: document.getElementById('email').value.trim(),
-      phone: document.getElementById('telefone').value.trim(),
-      address: document.getElementById('endereco').value.trim(),
-      cep: document.getElementById('cep').value.trim(),
-      cidade: document.getElementById('cidade').value.trim(),
-      estado: document.getElementById('estado').value
-    };
-    try{
-      localStorage.setItem('kristal_profile_seed', JSON.stringify(profileSeed));
-      localStorage.removeItem('kristal_state');
-    }catch(err){}
-    window.location.href = 'dashboard.html';
-  });
+
+  /* ==========================================
+     CADASTRO
+  ========================================== */
+
+  document
+    .getElementById('signup-form')
+    .addEventListener('submit', (e) => {
+
+      e.preventDefault();
+
+      const nome =
+        document.getElementById('nome').value.trim();
+
+      const email =
+        document.getElementById('email').value.trim();
+
+      const senha =
+        document.getElementById('senha').value;
+
+      const telefone =
+        document.getElementById('telefone').value.trim();
+
+      const cpf =
+        document.getElementById('cpf').value.trim();
+
+      const endereco =
+        document.getElementById('endereco').value.trim();
+
+      const cep =
+        document.getElementById('cep').value.trim();
+
+      const cidade =
+        document.getElementById('cidade').value.trim();
+
+      const estado =
+        document.getElementById('estado').value;
+
+
+      /* Validação da senha */
+
+      if (senha.length < 8) {
+
+        alert('A senha precisa ter pelo menos 8 caracteres.');
+
+        return;
+
+      }
+
+
+      /*
+       * Salva os dados da conta.
+       * O login.html vai utilizar exatamente
+       * estes dados para fazer a autenticação.
+       */
+
+      const account = {
+
+        name: nome || 'Novo usuário',
+
+        email: email.toLowerCase(),
+
+        password: senha,
+
+        phone: telefone,
+
+        cpf: cpf,
+
+        address: endereco,
+
+        cep: cep,
+
+        cidade: cidade,
+
+        estado: estado
+
+      };
+
+
+      try {
+
+        localStorage.setItem(
+          'kristal_account',
+          JSON.stringify(account)
+        );
+
+
+        /*
+         * Mantém os dados do perfil para o dashboard.
+         */
+
+        const profileSeed = {
+
+          name: nome || 'Novo usuário',
+
+          email: email.toLowerCase(),
+
+          phone: telefone,
+
+          address: endereco,
+
+          cep: cep,
+
+          cidade: cidade,
+
+          estado: estado
+
+        };
+
+
+        localStorage.setItem(
+          'kristal_profile_seed',
+          JSON.stringify(profileSeed)
+        );
+
+
+        /*
+         * Limpa o estado anterior do dashboard.
+         */
+
+        localStorage.removeItem('kristal_state');
+
+
+        /*
+         * Marca que o cadastro foi realizado.
+         */
+
+        localStorage.setItem(
+          'kristal_registered',
+          'true'
+        );
+
+
+        /*
+         * Redireciona para o dashboard.
+         */
+
+        window.location.href = 'dashboard.html';
+
+      } catch (err) {
+
+        alert(
+          'Não foi possível salvar os dados da conta neste navegador.'
+        );
+
+        console.error(err);
+
+      }
+
+    });
+
 </script>
 
 </body>
